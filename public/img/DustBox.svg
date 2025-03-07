@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <style>
+      .a {
+        fill: none;
+        stroke: #231815;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2px;
+      }
+    </style>
+  </defs>
+  <title>1036_tr_h</title>
+  <g>
+    <polyline class="a" points="16.13 19.3 17.73 36.5 30.27 36.5 31.87 19.3"/>
+    <polygon class="a" points="27.78 15.49 20.22 15.49 21.22 11.5 26.78 11.5 27.78 15.49"/>
+    <line class="a" x1="14.5" y1="15.49" x2="33.5" y2="15.49"/>
+  </g>
+</svg>
