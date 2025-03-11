@@ -12,7 +12,6 @@ import { SAddAndRemoveForm } from "../organisms/SAddAndRemoveForm";
 import type { CheckNameLinkZodObject } from "../object/CheckNameLinkObject";
 import { checkNameLinkZodObject } from "../object/CheckNameLinkObject";
 import { useRouter } from "next/router";
-import { SInputText } from "../atoms/SInputText";
 import type { LibrariesCountObject } from "../object/LibrariesCountObject";
 import { librariesCountZodObject } from "../object/LibrariesCountObject";
 import type {
@@ -27,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { BookSearch } from "../object/BookSearchObject";
 import { bookSearchZodEffect } from "../object/BookSearchObject";
 import Link from "next/link";
+import { SInputTextShort } from "../atoms/SInputTextShort";
 
 const MapComponent = dynamic(() => import("../molecules/SMap"), { ssr: false });
 
@@ -255,7 +255,7 @@ const SSearchForm: React.FC = () => {
 
   return (
     <>
-      <div className="mx-auto mb-4 w-[424px] bg-main p-4 text-accent md:mx-4 md:w-[740px]">
+      <div className="mx-auto w-[424px] bg-main p-4 text-accent md:w-[740px]">
         <div className="flex justify-between">
           <h2 className="text-xl">書籍検索フォーム</h2>
           <SWarningButton
@@ -372,17 +372,9 @@ const SSearchForm: React.FC = () => {
             <div className="mb-2">
               <p>検索図書館戸数</p>
               <div className="flex justify-between text-center">
-                <SInputText
+                <SInputTextShort
                   register={registerFormLibrariesCount("value")}
-                  value={formLibrariesCount.value}
-                  handle={(e) =>
-                    setFormLibrariesCount({
-                      ...formLibrariesCount,
-                      value: e.target.value,
-                    })
-                  }
-                  fieldError={errorsFormLibrariesCount.value}
-                ></SInputText>
+                ></SInputTextShort>
                 {
                   <SButton
                     handle={() => {
@@ -391,10 +383,15 @@ const SSearchForm: React.FC = () => {
                       })();
                     }}
                     type={"button"}
-                    child={"青マーカー周辺の図書館を検索"}
+                    child={"マーカー周辺の図書館を検索"}
                   ></SButton>
                 }
               </div>
+              {errorsFormLibrariesCount.value && (
+                <p className="text-error">
+                  {errorsFormLibrariesCount.value.message}
+                </p>
+              )}
             </div>
           </div>
           <div className="md:w-[352px]">
@@ -429,45 +426,50 @@ const SSearchForm: React.FC = () => {
             />
           </div>
         </div>
-        <div className="mt-4 flex justify-between">
-          <div className="inline-block w-1/6"></div>
-          <SButton
-            handle={async () => {
-              let isOkBooksCheck = false;
-              let isOkLibrariesCheck = false;
+        <div className="mt-4">
+          <div className="text-center">
+            <SButton
+              handle={async () => {
+                let isOkBooksCheck = false;
+                let isOkLibrariesCheck = false;
 
-              await Promise.all([
-                handleSubmitFormBooksSearchList(() => {
-                  null;
-                })(),
-                handleSubmitFormLibrariesSearchList(() => {
-                  null;
-                })(),
-              ]);
+                await Promise.all([
+                  handleSubmitFormBooksSearchList(() => {
+                    null;
+                  })(),
+                  handleSubmitFormLibrariesSearchList(() => {
+                    null;
+                  })(),
+                ]);
 
-              if (getValuesFormBooksSearchList().checkboxList.length > 0) {
-                isOkBooksCheck = true;
-              }
-              if (getValuesFormLibrariesSearchList().checkboxList.length > 0) {
-                isOkLibrariesCheck = true;
-              }
+                if (getValuesFormBooksSearchList().checkboxList.length > 0) {
+                  isOkBooksCheck = true;
+                }
+                if (
+                  getValuesFormLibrariesSearchList().checkboxList.length > 0
+                ) {
+                  isOkLibrariesCheck = true;
+                }
 
-              if (isOkBooksCheck && isOkLibrariesCheck) {
-                searchCollectionBooks();
-              }
-            }}
-            type={"button"}
-            child={"蔵書検索開始"}
-          ></SButton>
-          <Link href={"https://calil.jp/"} target="_blank">
-            <Image
-              width={100}
-              height={40}
-              src={"/img/calil_logocopy_bgblack.svg"}
-              alt="Powered by カーリル"
-              className="mx-1 mt-[3px] inline-block align-top"
-            />
-          </Link>
+                if (isOkBooksCheck && isOkLibrariesCheck) {
+                  searchCollectionBooks();
+                }
+              }}
+              type={"button"}
+              child={"蔵書検索開始"}
+            ></SButton>
+          </div>
+          <div className="text-right">
+            <Link href={"https://calil.jp/"} target="_blank">
+              <Image
+                width={100}
+                height={40}
+                src={"/img/calil_logocopy_bgblack.svg"}
+                alt="Powered by カーリル"
+                className="mx-1 mt-[3px] inline-block align-top"
+              />
+            </Link>
+          </div>
         </div>
       </div>
     </>

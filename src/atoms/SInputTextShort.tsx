@@ -1,20 +1,17 @@
-import type { FieldError, UseFormRegisterReturn } from "react-hook-form";
+import type { UseFormRegisterReturn } from "react-hook-form";
 
 type Props = {
   register: UseFormRegisterReturn;
-  fieldError?: FieldError;
 };
 
-export const SInputTextShort: React.FC<Props> = ({register, fieldError}) => {
+export const SInputTextShort: React.FC<Props> = ({ register }) => {
   return (
     <>
       <input
         {...register}
         type="text"
-        className="mb-2 mr-2 w-full bg-accent px-2 py-1 text-text"
+        className="mb-2 mr-2 w-1/3 bg-accent px-2 py-1 text-text text-left"
       />
-      <br />
-      {fieldError && <p className="text-error">{fieldError.message}</p>}
     </>
   );
 };

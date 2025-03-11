@@ -6,7 +6,7 @@ export const SHeader: React.FC = () => {
 
   return (
     <>
-      <div className="fixed left-0 top-0 h-12 w-full">
+      <div className="fixed left-0 top-0 h-9 w-full bg-sub z-10">
         <nav className="flex w-full items-center justify-between bg-main">
           <Link href="/" className="text-3xl text-accent">
             ニアバイ蔵書検索

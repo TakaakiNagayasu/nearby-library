@@ -8,10 +8,10 @@ const Home: NextPage = () => {
   return (
     <>
       <SHead pageName="検索結果" />
-      <div className="bg-sub">
+      <div>
         <SHeader />
 
-        <main className="mt-16 bg-sub">
+        <main className="pt-16 pb-8">
           <SSearchResult />
         </main>
       </div>

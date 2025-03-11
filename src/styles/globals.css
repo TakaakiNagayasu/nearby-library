@@ -2,5 +2,14 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@layer components {
+@layer base {
+  :root {
+    --color-sub: theme(colors.sub);
+  }
+
+  html,
+  body {
+    height: 100%;
+    background-color: var(--color-sub);
+  }
 }

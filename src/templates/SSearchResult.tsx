@@ -213,7 +213,7 @@ export const SSearchResult: React.FC = () => {
 
   return (
     <>
-      <div className="mx-auto mb-4 w-[424px] bg-main p-4 text-accent md:mx-4 md:w-[740px]">
+      <div className="mx-auto w-[424px] bg-main p-4 text-accent">
         <SBackSearchForm
           prevPage={prevPageUrlParams}
           isbnCodesUrlParams={isbnCodesUrlParams}

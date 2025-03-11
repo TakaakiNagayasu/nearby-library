@@ -189,15 +189,17 @@ export const MapWidget: React.FC<Props> = ({ apiKey, mapId, libraries }) => {
   if (!isLoaded) return <div>Loading...</div>;
 
   return (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={center}
-      zoom={CONSTANTS.GOOGLE_MAPS_DEFAULT_ZOOM}
-      onLoad={(map) => {
-        mapRef.current = map;
-        map.setOptions({ mapId: mapId });
-      }}
-      onClick={(event) => handleMapClick(event)}
-    />
+    <>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={CONSTANTS.GOOGLE_MAPS_DEFAULT_ZOOM}
+        onLoad={(map) => {
+          mapRef.current = map;
+          map.setOptions({ mapId: mapId });
+        }}
+        onClick={(event) => handleMapClick(event)}
+      />
+    </>
   );
 };

@@ -41,7 +41,7 @@ export const SCheckNameLinkList: React.FC<Props> = ({
               {...register(`checkboxList.${index}.checkbox`)}
               type="checkbox"
               checked={item.checkbox}
-              className="mx-1 mt-[5px] align-top"
+              className="mx-1 mt-[3px] align-top appearance-auto"
               onChange={() => clickCheckboxHandler(index)}
             />
             <p

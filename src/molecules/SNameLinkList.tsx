@@ -32,7 +32,7 @@ export const SNameLinkList: React.FC<Props> = ({
               <p>{`${totalLibkeyCount}件`}</p>
             </div>
 
-            <div className="mt-2 h-[128px] overflow-y-auto border bg-accent text-text">
+            <div className="my-2 h-[128px] overflow-y-auto border bg-accent text-text">
               {Object.entries(systemIdMap).flatMap(
                 ([systemid, systemidDetail]) => {
                   const typedSystemIdDetail = (systemidDetail ??

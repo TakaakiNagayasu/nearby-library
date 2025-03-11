@@ -13,7 +13,7 @@ export const SInputText: React.FC<Props> = ({register, value, handle, fieldError
       <input
         {...register}
         type="text"
-        className="mb-2 mr-2 w-full bg-accent px-2 py-1 text-text"
+        className="mb-2 mr-2 w-full bg-accent px-2 py-1 text-text text-left"
         value={value}
         onChange={handle}
       />

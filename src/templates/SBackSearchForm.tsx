@@ -82,17 +82,23 @@ export const SBackSearchForm: React.FC<Props> = ({
             child={"検索画面へ戻る"}
           ></SButton>
         )}
-        {session ? (
+        {session && !prevPage ? (
           <>
+            <br />
             <SInputTextShort
               register={register("title")}
-              fieldError={errors.title}
             />
             <SButton
               handle={handleSubmit(() => handleRegisterBookmark())}
               type={"button"}
               child={"検索条件をブックマークする"}
             ></SButton>
+            <br />
+            {errors.title && (
+                <p className="text-error">
+                  {errors.title.message}
+                </p>
+              )}
           </>
         ) : null}
       </div>
