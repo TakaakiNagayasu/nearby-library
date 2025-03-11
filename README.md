@@ -1,27 +1,48 @@
-# Create T3 App
 
-This is an app bootstrapped according to the [init.tips](https://init.tips) stack, also known as the T3-Stack.
+# 本プロジェクトの操作方法
+本プロジェクト「ニアバイ蔵書検索」は、検索したい書籍と検索対象とする図書館を選択することで、書籍ごとに貸出状況を検索し、一覧表示します。
 
-## What's next? How do I make an app with this?
+1. 「書籍検索フォーム」から検索したい本について「書名」「著者」「出版社」「ISBN」へ条件指定し、「書籍候補検索」ボタンを押下してください。
+2. 「書籍候補一覧」から、蔵書検索に使用したい書籍のチェックボックスを1つ以上オンにし、「書籍検索対象に追加」ボタンを押下してください。
+3. 「図書館検索フォーム」からマップをクリックし、青マーカーを立ててください。その後、「青マーカー周辺の図書館を検索」ボタンを押下してください。
+4. 「図書館候補一覧」から、図書館検索に使用したい図書館のチェックボックスを1つ以上オンにし、「図書館検索対象に追加」ボタンを押下してください。
+5. 「蔵書検索開始」ボタンを押下してください。順次貸出状況を出力します。
 
-We try to keep this project as simple as possible, so you can start with the most basic configuration and then move on to more advanced configuration.
+また、GitHubによるログインを行うことでブックマーク機能を利用できるようになり、検索後に検索条件を保存し、ブックマークから1クリックで検索できます。
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+# 本プロジェクトをローカル環境・リモート環境で実行するには
 
-- [Next-Auth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [TailwindCSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## 本プロジェクトのクローンを各自のローカル環境、もしくはリモート環境に作成
+各自のローカル、もしくはリモート環境にて、プロジェクトをクローンしたいディレクトリ直下でターミナルを開き、
+「git clone 【本プロジェクトのGitHubページから「<> code」を押下→CloneのURL】」を入力してください。
 
-We also [roll our own docs](https://create.t3.gg) with some summary information and links to the respective documentation.
+## 環境変数ファイルを作成する
+本プロジェクト直下にある「.env.example」に従い、環境変数ファイルを作成してください。
 
-Also checkout these awesome tutorials on `create-t3-app`.
+## Supabase上のPostgreSQLにテーブルを作成する
+プロジェクトをクローンしたディレクトリ直下でターミナルを開き、
+ローカルの場合：「npx prisma migrate dev」を、リモートの場合「npx prisma migrate deploy」を入力してください。
 
-- [Build a Blog With the T3 Stack - tRPC, TypeScript, Next.js, Prisma & Zod](https://www.youtube.com/watch?v=syEWlxVFUrY)
-- [Build a Live Chat Application with the T3 Stack - TypeScript, Tailwind, tRPC](https://www.youtube.com/watch?v=dXRRY37MPuk)
-- [Build a full stack app with create-t3-app](https://www.nexxel.dev/blog/ct3a-guestbook)
-- [A first look at create-t3-app](https://dev.to/ajcwebdev/a-first-look-at-create-t3-app-1i8f)
+## （リモートの場合のみ）環境変数をVercelに適用する
+プロジェクトをクローンしたディレクトリ直下でターミナルを開き、
+「cat .env | xargs -I {} vercel env add {} production」を入力し、環境変数を適用してください。
 
-## How do I deploy this?
+## （ローカルの場合のみ）ビルド・実行する
+プロジェクトをクローンしたディレクトリ直下でターミナルを開き、
+「npx next build」を入力し、ビルドしてください。
+エラーがなければ、続けて「npm run dev」を入力し、実行してください。
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+## （リモートの場合のみ）デプロイする
+プロジェクトをクローンしたディレクトリ直下でターミナルを開き、
+「vercel --prod」を入力してください。
+
+## ビルド・デプロイしたページにアクセス
+作成した環境変数ファイル（ローカルの場合「.env.local」、リモートの場合「.env」）内の「NEXTAUTH_URL」に記述したURLにアクセスしてください。
+
+# 使用APIについて
+本プロジェクトは以下のAPIを使用しています。
+* Google Books API
+* Google Maps API
+* 日本最大の図書館検索 カーリル 図書館 API
+  https://calil.jp/doc/api.html
+  ![日本最大の図書館検索サイト カーリル](https://calil.jp/public/img/download/calil_logocopy_bgblack.svg)
