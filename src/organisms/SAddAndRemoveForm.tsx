@@ -1,7 +1,7 @@
-import { type Dispatch, type SetStateAction } from "react";
-import type {
-  CheckNameLinkZodObject,
-  CheckNameLink,
+import {
+  type CheckNameLinkZodObject,
+  type CheckNameLinkItem,
+  checkNameLinkZodObject,
 } from "../object/CheckNameLinkObject";
 import SButton from "../atoms/SButton";
 import { SCheckNameLinkList } from "../molecules/SCheckNameLinkList";
@@ -19,16 +19,12 @@ import {
 
 type Props = {
   itemName: string;
-  itemsCandidateList: CheckNameLinkZodObject;
-  setItemsCandidateList: Dispatch<SetStateAction<CheckNameLinkZodObject>>;
   controlItemsCandidateList: Control<CheckNameLinkZodObject, unknown>;
   registerFormItemsCandidateList: UseFormRegister<CheckNameLinkZodObject>;
   handleSubmitFormItemsCandidateList: UseFormHandleSubmit<CheckNameLinkZodObject>;
   getValuesFormItemsCandidateList: UseFormGetValues<CheckNameLinkZodObject>;
   setValueFormItemsCandidateList: UseFormSetValue<CheckNameLinkZodObject>;
   errorsFormItemsCandidateList: FieldErrors<CheckNameLinkZodObject>;
-  itemsSearchList: CheckNameLink;
-  setItemsSearchList: Dispatch<SetStateAction<CheckNameLink>>;
   controlItemsSearchList: Control<CheckNameLinkZodObject, unknown>;
   registerFormItemsSearchList: UseFormRegister<CheckNameLinkZodObject>;
   handleSubmitFormItemsSearchList: UseFormHandleSubmit<CheckNameLinkZodObject>;
@@ -39,94 +35,83 @@ type Props = {
 
 export const SAddAndRemoveForm: React.FC<Props> = ({
   itemName,
-  itemsCandidateList,
-  setItemsCandidateList,
   controlItemsCandidateList,
   registerFormItemsCandidateList,
   handleSubmitFormItemsCandidateList,
-  //getValuesFormItemsCandidateList,
+  getValuesFormItemsCandidateList,
   setValueFormItemsCandidateList,
   errorsFormItemsCandidateList,
-  itemsSearchList,
-  setItemsSearchList,
   controlItemsSearchList,
   registerFormItemsSearchList,
   handleSubmitFormItemsSearchList,
-  // getValuesFormItemsSearchList,
+  getValuesFormItemsSearchList,
   setValueFormItemsSearchList,
   errorsFormItemsSearchList,
 }) => {
   const addHandler = () => {
-    setItemsSearchList((prev: CheckNameLink) => ({
-      ...prev,
-      checkboxList: [
-        ...prev.checkboxList,
-        ...itemsCandidateList?.checkboxList
-          .filter((item) => item.checkbox)
-          .filter((item) => {
-            let isMatch = false;
-            prev.checkboxList.forEach((searchItem) => {
-              if (item.value === searchItem.value) {
-                isMatch = true;
-              }
-            });
-            return !isMatch;
-          })
-          .map((item) => ({
+    const prevList = getValuesFormItemsSearchList()?.checkboxList ?? [];
+    const checkNameLinkItemArray: CheckNameLinkItem[] = [
+      ...prevList,
+      ...(getValuesFormItemsCandidateList()
+        ?.checkboxList.filter((item) => item.checkbox)
+        .filter(
+          (item) =>
+            !prevList.some((searchItem) => item.value === searchItem.value)
+        )
+        .map(
+          (item): CheckNameLinkItem => ({
             enabled: true,
             checkbox: false,
             name: item.name,
             sub: item.sub,
             value: item.value,
             link: item.link,
-          })),
-      ],
-    }));
-    setValueFormItemsSearchList("checkboxList", itemsSearchList.checkboxList);
+          })
+        ) ?? []),
+    ];
+    const parsedResult = checkNameLinkZodObject.shape.checkboxList.safeParse(
+      checkNameLinkItemArray
+    );
+    setValueFormItemsSearchList("checkboxList", parsedResult.success ? parsedResult.data : checkNameLinkItemArray);
   };
 
   const removeHandler = () => {
-    setItemsSearchList((prevList) => ({
-      ...prevList,
-      checkboxList: prevList.checkboxList
-        .filter((item) => !item.checkbox)
-        .map((item) => ({
-          ...item,
-          checkbox: false,
-        })),
-    }));
-    setValueFormItemsCandidateList(
-      "checkboxList",
-      itemsCandidateList.checkboxList
-    );
-  };
+    const prevList = getValuesFormItemsSearchList()?.checkboxList ?? [];
+    const checkNameLinkItemArray: CheckNameLinkItem[] = prevList
+      .filter((item) => !item.checkbox)
+      .map((item) => ({
+        enabled: true,
+        checkbox: false,
+        name: item.name,
+        sub: item.sub,
+        value: item.value,
+        link: item.link,
+      }));
+      const parsedResult = checkNameLinkZodObject.shape.checkboxList.safeParse(
+        checkNameLinkItemArray
+      );
+      setValueFormItemsSearchList("checkboxList", parsedResult.success ? parsedResult.data : checkNameLinkItemArray);
+    };
 
   const {
-    // fields: fieldsCandidateList,
-    // append: appendCandidateList,
-    // remove: removeCandidateList,
   } = useFieldArray({
     control: controlItemsCandidateList,
     name: "checkboxList",
   });
 
   const {
-    // fields: fieldsSearchList,
-    // append: appendSearchList,
-    // remove: removeSearchList,
   } = useFieldArray({
     control: controlItemsSearchList,
     name: "checkboxList",
   });
-
   return (
     <>
       <div className="md:w-[352px]">
         <SCheckNameLinkList
           register={registerFormItemsCandidateList}
           title={`${itemName}候補一覧`}
-          list={itemsCandidateList}
-          setList={setItemsCandidateList}
+          list={getValuesFormItemsCandidateList()}
+          setList={setValueFormItemsCandidateList}
         />
 
         {errorsFormItemsCandidateList?.checkboxList && (
@@ -157,8 +142,8 @@ export const SAddAndRemoveForm: React.FC<Props> = ({
         <SCheckNameLinkList
           register={registerFormItemsSearchList}
           title={`${itemName}検索対象`}
-          list={itemsSearchList}
-          setList={setItemsSearchList}
+          list={getValuesFormItemsSearchList()}
+          setList={setValueFormItemsSearchList}
         />
         {errorsFormItemsSearchList?.checkboxList && (
           <p className="text-error">

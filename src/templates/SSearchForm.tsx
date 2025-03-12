@@ -27,15 +27,15 @@ import type { BookSearch } from "../object/BookSearchObject";
 import { bookSearchZodEffect } from "../object/BookSearchObject";
 import Link from "next/link";
 import { SInputTextShort } from "../atoms/SInputTextShort";
+import { CONSTANTS } from "../config/constants";
 
 const MapComponent = dynamic(() => import("../molecules/SMap"), { ssr: false });
 
 export const FormBookSearchContext = createContext(
   {} as {
-    formBookSearch: BookSearch;
-    setFormBookSearch: Dispatch<SetStateAction<BookSearch>>;
     registerFormBookSearch: UseFormRegister<BookSearch>;
     handleSubmitFormBookSearch: UseFormHandleSubmit<BookSearch>;
+    getValuesFormBookSearch: UseFormGetValues<BookSearch>;
     errorsFormBookSearch: FieldErrors<BookSearch>;
     searchBooksInformation: boolean;
     setSearchBooksInformation: Dispatch<SetStateAction<boolean>>;
@@ -45,15 +45,11 @@ export const FormBookSearchContext = createContext(
 
 export const BooksListContext = createContext(
   {} as {
-    booksCandidateList: CheckNameLinkZodObject;
-    setBooksCandidateList: Dispatch<SetStateAction<CheckNameLinkZodObject>>;
     registerFormBooksCandidateList: UseFormRegister<CheckNameLinkZodObject>;
     handleSubmitFormBooksCandidateList: UseFormHandleSubmit<CheckNameLinkZodObject>;
     getValuesFormBooksCandidateList: UseFormGetValues<CheckNameLinkZodObject>;
     setValueFormBooksCandidateList: UseFormSetValue<CheckNameLinkZodObject>;
     errorsFormBooksCandidateList: FieldErrors<CheckNameLinkZodObject>;
-    booksSearchList: CheckNameLinkZodObject;
-    setBooksSearchList: Dispatch<SetStateAction<CheckNameLinkZodObject>>;
     registerFormBooksSearchList: UseFormRegister<CheckNameLinkZodObject>;
     handleSubmitFormBooksSearchList: UseFormHandleSubmit<CheckNameLinkZodObject>;
     setValueFormBooksSearchList: UseFormSetValue<CheckNameLinkZodObject>;
@@ -61,10 +57,9 @@ export const BooksListContext = createContext(
   }
 );
 
-export const FormLibrariesCountContext = createContext(
+export const LibrariesCountContext = createContext(
   {} as {
-    formLibrariesCount: LibrariesCountObject;
-    setFormLibrariesCount: Dispatch<SetStateAction<LibrariesCountObject>>;
+    getValuesFormLibrariesCount: UseFormGetValues<LibrariesCountObject>;
   }
 );
 
@@ -77,14 +72,10 @@ export const SearchNearByLibraryContext = createContext(
 
 export const LibrariesListContext = createContext(
   {} as {
-    librariesCandidateList: CheckNameLinkZodObject;
-    setLibrariesCandidateList: Dispatch<SetStateAction<CheckNameLinkZodObject>>;
     registerFormLibrariesCandidateList: UseFormRegister<CheckNameLinkZodObject>;
     handleSubmitFormLibrariesCandidateList: UseFormHandleSubmit<CheckNameLinkZodObject>;
     setValueFormLibrariesCandidateList: UseFormSetValue<CheckNameLinkZodObject>;
     errorsFormLibrariesCandidateList: FieldErrors<CheckNameLinkZodObject>;
-    librariesSearchList: CheckNameLinkZodObject;
-    setLibrariesSearchList: Dispatch<SetStateAction<CheckNameLinkZodObject>>;
     registerFormLibrariesSearchList: UseFormRegister<CheckNameLinkZodObject>;
     handleSubmitFormLibrariesSearchList: UseFormHandleSubmit<CheckNameLinkZodObject>;
     setValueFormLibrariesSearchList: UseFormSetValue<CheckNameLinkZodObject>;
@@ -98,6 +89,7 @@ const SSearchForm: React.FC = () => {
   const {
     register: registerFormBookSearch,
     handleSubmit: handleSubmitFormBookSearch,
+    getValues: getValuesFormBookSearch,
     setValue: setValueFormBookSearch,
     formState: { errors: errorsFormBookSearch },
   } = useForm<BookSearch>({
@@ -111,10 +103,6 @@ const SSearchForm: React.FC = () => {
     publisher: "",
     isbn: "",
   };
-
-  const [formBookSearch, setFormBookSearch] = useState<BookSearch>(
-    defaultBookSearchObject
-  );
 
   const [searchBooksInformation, setSearchBooksInformation] =
     useState<boolean>(false);
@@ -132,9 +120,6 @@ const SSearchForm: React.FC = () => {
     defaultValues: { checkboxList: [] },
   });
 
-  const [booksCandidateList, setBooksCandidateList] =
-    useState<CheckNameLinkZodObject>({ checkboxList: [] });
-
   const {
     control: controlFormBooksSearchList,
     register: registerFormBooksSearchList,
@@ -148,23 +133,19 @@ const SSearchForm: React.FC = () => {
     defaultValues: { checkboxList: [] },
   });
 
-  const [booksSearchList, setBooksSearchList] =
-    useState<CheckNameLinkZodObject>({ checkboxList: [] });
-
   const {
     register: registerFormLibrariesCount,
     handleSubmit: handleSubmitFormLibrariesCount,
+    getValues: getValuesFormLibrariesCount,
     setValue: setValueFormLibrariesCount,
     formState: { errors: errorsFormLibrariesCount },
   } = useForm<LibrariesCountObject>({
     resolver: zodResolver(librariesCountZodObject),
     mode: "onBlur",
+    defaultValues: {
+      value: CONSTANTS.LIBRARIES_SEARCH_DEFAULT_COUNT.toString(),
+    },
   });
-
-  const [formLibrariesCount, setFormLibrariesCount] =
-    useState<LibrariesCountObject>({
-      value: "5",
-    });
 
   const [searchNearByLibrary, setSearchNearByLibrary] =
     useState<boolean>(false);
@@ -182,9 +163,6 @@ const SSearchForm: React.FC = () => {
     defaultValues: { checkboxList: [] },
   });
 
-  const [librariesCandidateList, setLibrariesCandidateList] =
-    useState<CheckNameLinkZodObject>({ checkboxList: [] });
-
   const {
     control: controlFormLibrariesSearchList,
     register: registerFormLibrariesSearchList,
@@ -198,41 +176,30 @@ const SSearchForm: React.FC = () => {
     defaultValues: { checkboxList: [] },
   });
 
-  const [librariesSearchList, setLibrariesSearchList] =
-    useState<CheckNameLinkZodObject>({ checkboxList: [] });
-
   const resetBooksForm = () => {
-    setFormBookSearch({
-      bookTitle: defaultBookSearchObject.bookTitle,
-      author: defaultBookSearchObject.author,
-      publisher: defaultBookSearchObject.publisher,
-      isbn: defaultBookSearchObject.isbn,
-    });
     setValueFormBookSearch("bookTitle", defaultBookSearchObject.bookTitle);
     setValueFormBookSearch("author", defaultBookSearchObject.author);
     setValueFormBookSearch("publisher", defaultBookSearchObject.publisher);
     setValueFormBookSearch("isbn", defaultBookSearchObject.isbn);
-    setBooksCandidateList({ checkboxList: [] });
     setValueFormBooksCandidateList("checkboxList", []);
-    setBooksSearchList({ checkboxList: [] });
     setValueFormBooksSearchList("checkboxList", []);
   };
 
   const resetLibrariesForm = () => {
-    setFormLibrariesCount({ value: "5" });
-    setValueFormLibrariesCount("value", "5");
-    setLibrariesCandidateList({ checkboxList: [] });
+    setValueFormLibrariesCount(
+      "value",
+      CONSTANTS.LIBRARIES_SEARCH_DEFAULT_COUNT.toString()
+    );
     setValueFormLibrariesCandidateList("checkboxList", []);
-    setLibrariesSearchList({ checkboxList: [] });
     setValueFormLibrariesSearchList("checkboxList", []);
   };
 
   const searchCollectionBooks = () => {
-    const isbnString = booksSearchList.checkboxList
+    const isbnString = getValuesFormBooksSearchList().checkboxList
       .map((book) => book.value)
       .join(",");
     const systemidDistinctSet = new Set<string>();
-    librariesSearchList.checkboxList.forEach((checkNameLink) => {
+    getValuesFormLibrariesSearchList().checkboxList.forEach((checkNameLink) => {
       if (!systemidDistinctSet.has(checkNameLink.value ?? "")) {
         systemidDistinctSet.add(checkNameLink.value ?? "");
       }
@@ -271,10 +238,9 @@ const SSearchForm: React.FC = () => {
           <div className="md:w-[320px]">
             <FormBookSearchContext.Provider
               value={{
-                formBookSearch,
-                setFormBookSearch,
                 registerFormBookSearch,
                 handleSubmitFormBookSearch,
+                getValuesFormBookSearch,
                 errorsFormBookSearch,
                 searchBooksInformation,
                 setSearchBooksInformation,
@@ -283,15 +249,11 @@ const SSearchForm: React.FC = () => {
             >
               <BooksListContext.Provider
                 value={{
-                  booksCandidateList,
-                  setBooksCandidateList,
                   registerFormBooksCandidateList,
                   handleSubmitFormBooksCandidateList,
                   getValuesFormBooksCandidateList,
                   setValueFormBooksCandidateList,
                   errorsFormBooksCandidateList,
-                  booksSearchList,
-                  setBooksSearchList,
                   registerFormBooksSearchList,
                   handleSubmitFormBooksSearchList,
                   setValueFormBooksSearchList,
@@ -305,8 +267,6 @@ const SSearchForm: React.FC = () => {
           <div className="md:w-[352px]">
             <SAddAndRemoveForm
               itemName="書籍"
-              itemsCandidateList={booksCandidateList}
-              setItemsCandidateList={setBooksCandidateList}
               controlItemsCandidateList={controlFormBooksCandidateList}
               registerFormItemsCandidateList={registerFormBooksCandidateList}
               handleSubmitFormItemsCandidateList={
@@ -315,8 +275,6 @@ const SSearchForm: React.FC = () => {
               getValuesFormItemsCandidateList={getValuesFormBooksCandidateList}
               setValueFormItemsCandidateList={setValueFormBooksCandidateList}
               errorsFormItemsCandidateList={errorsFormBooksCandidateList}
-              itemsSearchList={booksSearchList}
-              setItemsSearchList={setBooksSearchList}
               controlItemsSearchList={controlFormBooksSearchList}
               registerFormItemsSearchList={registerFormBooksSearchList}
               handleSubmitFormItemsSearchList={handleSubmitFormBooksSearchList}
@@ -339,35 +297,33 @@ const SSearchForm: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="md:w-[320px]">
             <div className="mb-2 flex items-center justify-center">
-              <FormLibrariesCountContext.Provider
-                value={{ formLibrariesCount, setFormLibrariesCount }}
+              <SearchNearByLibraryContext.Provider
+                value={{ searchNearByLibrary, setSearchNearByLibrary }}
               >
-                <SearchNearByLibraryContext.Provider
-                  value={{ searchNearByLibrary, setSearchNearByLibrary }}
+                <LibrariesListContext.Provider
+                  value={{
+                    registerFormLibrariesCandidateList,
+                    handleSubmitFormLibrariesCandidateList,
+                    setValueFormLibrariesCandidateList,
+                    errorsFormLibrariesCandidateList,
+                    registerFormLibrariesSearchList,
+                    handleSubmitFormLibrariesSearchList,
+                    setValueFormLibrariesSearchList,
+                    errorsFormLibrariesSearchList,
+                  }}
                 >
-                  <LibrariesListContext.Provider
+                  <LibrariesCountContext.Provider
                     value={{
-                      librariesCandidateList,
-                      setLibrariesCandidateList,
-                      registerFormLibrariesCandidateList,
-                      handleSubmitFormLibrariesCandidateList,
-                      setValueFormLibrariesCandidateList,
-                      errorsFormLibrariesCandidateList,
-                      librariesSearchList,
-                      setLibrariesSearchList,
-                      registerFormLibrariesSearchList,
-                      handleSubmitFormLibrariesSearchList,
-                      setValueFormLibrariesSearchList,
-                      errorsFormLibrariesSearchList,
+                      getValuesFormLibrariesCount,
                     }}
                   >
                     <MapComponent
                       apiKey={env.NEXT_PUBLIC_GOOGLE_API_KEY}
                       mapId={env.NEXT_PUBLIC_GOOGLE_MAPS_ID}
                     />
-                  </LibrariesListContext.Provider>
-                </SearchNearByLibraryContext.Provider>
-              </FormLibrariesCountContext.Provider>
+                  </LibrariesCountContext.Provider>
+                </LibrariesListContext.Provider>
+              </SearchNearByLibraryContext.Provider>
             </div>
             <div className="mb-2">
               <p>検索図書館戸数</p>
@@ -397,8 +353,6 @@ const SSearchForm: React.FC = () => {
           <div className="md:w-[352px]">
             <SAddAndRemoveForm
               itemName="図書館"
-              itemsCandidateList={librariesCandidateList}
-              setItemsCandidateList={setLibrariesCandidateList}
               controlItemsCandidateList={controlFormLibrariesCandidateList}
               registerFormItemsCandidateList={
                 registerFormLibrariesCandidateList
@@ -413,8 +367,6 @@ const SSearchForm: React.FC = () => {
                 setValueFormLibrariesCandidateList
               }
               errorsFormItemsCandidateList={errorsFormLibrariesCandidateList}
-              itemsSearchList={librariesSearchList}
-              setItemsSearchList={setLibrariesSearchList}
               controlItemsSearchList={controlFormLibrariesSearchList}
               registerFormItemsSearchList={registerFormLibrariesSearchList}
               handleSubmitFormItemsSearchList={

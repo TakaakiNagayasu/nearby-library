@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { GoogleMap, useLoadScript } from "@react-google-maps/api";
 import {
-  FormLibrariesCountContext,
+  LibrariesCountContext,
   LibrariesListContext,
   SearchNearByLibraryContext,
 } from "../templates/SSearchForm";
@@ -42,9 +42,10 @@ export const MapWidget: React.FC<Props> = ({ apiKey, mapId, libraries }) => {
   const [userMarker, setUserMarker] =
     useState<google.maps.marker.AdvancedMarkerElement>();
 
-  const { formLibrariesCount } = useContext(FormLibrariesCountContext);
   const { searchNearByLibrary } = useContext(SearchNearByLibraryContext);
-  const { setLibrariesCandidateList } = useContext(LibrariesListContext);
+  const { setValueFormLibrariesCandidateList } =
+    useContext(LibrariesListContext);
+  const { getValuesFormLibrariesCount } = useContext(LibrariesCountContext);
 
   const isFirstRender = useRef(true);
 
@@ -95,7 +96,7 @@ export const MapWidget: React.FC<Props> = ({ apiKey, mapId, libraries }) => {
       const geoCodeObject: LatitudeLongitudeLimit = {
         latitude: lat,
         longitude: lng,
-        limit: formLibrariesCount.value,
+        limit: getValuesFormLibrariesCount().value,
       };
 
       const searchLibrariesFromGeoCode = async () => {
@@ -139,8 +140,9 @@ export const MapWidget: React.FC<Props> = ({ apiKey, mapId, libraries }) => {
         };
 
         // 図書館候補一覧に反映
-        setLibrariesCandidateList({
-          checkboxList: librariesFromGeoCode.map(
+        setValueFormLibrariesCandidateList(
+          "checkboxList",
+          librariesFromGeoCode.map(
             ({ systemid, formal, distance, url_pc }) => ({
               enabled: true,
               checkbox: false,
@@ -149,8 +151,8 @@ export const MapWidget: React.FC<Props> = ({ apiKey, mapId, libraries }) => {
               value: systemid,
               link: url_pc,
             })
-          ),
-        });
+          )
+        );
       };
 
       searchLibrariesFromGeoCode();

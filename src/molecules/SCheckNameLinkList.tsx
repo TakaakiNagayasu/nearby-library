@@ -1,14 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Dispatch, SetStateAction } from "react";
-import type { UseFormRegister } from "react-hook-form";
-import type { CheckNameLinkZodObject } from "../object/CheckNameLinkObject";
+import type { UseFormRegister, UseFormSetValue } from "react-hook-form";
+import type { CheckNameLinkItem } from "../object/CheckNameLinkObject";
+import {
+  checkNameLinkZodObject,
+  type CheckNameLinkZodObject,
+} from "../object/CheckNameLinkObject";
 
 type Props = {
   register: UseFormRegister<CheckNameLinkZodObject>;
   title: string;
   list: CheckNameLinkZodObject;
-  setList: Dispatch<SetStateAction<CheckNameLinkZodObject>>;
+  setList: UseFormSetValue<CheckNameLinkZodObject>;
 };
 
 export const SCheckNameLinkList: React.FC<Props> = ({
@@ -18,14 +21,17 @@ export const SCheckNameLinkList: React.FC<Props> = ({
   setList,
 }) => {
   const clickCheckboxHandler = (index: number) => {
-    setList((prevList) => ({
-      ...prevList,
-      checkboxList: prevList.checkboxList
-        ? prevList.checkboxList.map((item, i) =>
-            i === index ? { ...item, checkbox: !item.checkbox } : item
-          )
-        : [],
-    }));
+    const checkNameLinkItemArray: CheckNameLinkItem[] = list.checkboxList.map(
+      (item, i) => (i === index ? { ...item, checkbox: !item.checkbox } : item)
+    );
+
+    const parsedResult = checkNameLinkZodObject.shape.checkboxList.safeParse(
+      checkNameLinkItemArray
+    );
+    setList(
+      "checkboxList",
+      parsedResult.success ? parsedResult.data : checkNameLinkItemArray
+    );
   };
 
   return (
@@ -41,7 +47,7 @@ export const SCheckNameLinkList: React.FC<Props> = ({
               {...register(`checkboxList.${index}.checkbox`)}
               type="checkbox"
               checked={item.checkbox}
-              className="mx-1 mt-[3px] align-top appearance-auto"
+              className="mx-1 mt-[3px] appearance-auto align-top"
               onChange={() => clickCheckboxHandler(index)}
             />
             <p
