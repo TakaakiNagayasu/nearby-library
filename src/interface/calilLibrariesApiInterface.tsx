@@ -24,5 +24,5 @@ export type CalilLibrariesFromGeoCode = Array<
   }
 >;
 export type CalilLibrariesFromSystemid = Array<
-  Pick<CalilLibraries[number], "formal" | "libkey" | "systemid" | "systemname">
+  Pick<CalilLibraries[number], "formal" | "libkey" | "systemid">
 >;

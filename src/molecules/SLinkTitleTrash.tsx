@@ -37,7 +37,7 @@ export const SLinkTitleTrash: React.FC<Props> = ({
   return (
     <>
       <div className="flex justify-between">
-        <p>{`${titleLinkBookmarkIdObjects?.length}件`}</p>
+        <p>{`${titleLinkBookmarkIdObjects?.length ?? 0}件`}</p>
       </div>
 
       <div className="mt-2 h-[128px] overflow-y-auto border bg-accent text-text">

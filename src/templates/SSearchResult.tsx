@@ -6,23 +6,30 @@ import { trpc } from "../utils/trpc";
 import type { BookSearch } from "../object/BookSearchObject";
 import type { IsbnTitle } from "../object/IsbnTitleObject";
 import type { IsbnCodesSystemidDetail } from "../object/IsbnCodesSystemidDetailObject";
-import type { CalilBooksApiResponse } from "../interface/calilBooksApiInterface";
+import type {
+  CalilBooksApiResponse,
+  SystemidDetail,
+} from "../interface/calilBooksApiInterface";
 import type { Session } from "../object/SessionObject";
 import type { SystemidObject } from "../object/SystemidsObject";
+import type { SystemidMap } from "../object/SystemidMap";
+import type { CalilLibrariesFromSystemid } from "../interface/calilLibrariesApiInterface";
 
 export const SSearchResult: React.FC = () => {
   const [prevPageUrlParams, setPrevPageUrlParams] = useState<
     string | undefined
   >(undefined);
   const [isbnCodesUrlParams, setIsbnCodesUrlParams] = useState<string[]>([]);
-  const [systemIdsUrlParams, setSystemidDetailUrlParams] = useState<string[]>(
-    []
-  );
+  const [systemIdsUrlParams, setSystemidsUrlParams] = useState<
+    Map<string, Set<string>>
+  >(new Map());
 
   const [booksCandidateList, setBooksCandidateList] = useState<
     Map<string, string>
   >(() => new Map());
-  const [libraries, setLibraries] = useState<Map<string, string>>(new Map());
+  const [systemids, setSystemids] = useState<SystemidMap>({
+    systemidLibkeyFormalMap: new Map(),
+  });
   const [resultMap, setResultMap] = useState<CalilBooksApiResponse>({
     session: "",
     books: new Map(),
@@ -87,22 +94,62 @@ export const SSearchResult: React.FC = () => {
       return;
     }
 
+    function parseString(input: string): Map<string, Set<string>> {
+      const result = new Map<string, Set<string>>();
+  
+      // 1回目の正規表現: "," で区切り、配列を作成
+      const pairs = input.split(/,/);
+  
+      // 2回目の正規表現: ":" でキーと値に分割
+      pairs.forEach((pair) => {
+        const match = pair.match(/^([^:]+):(.+)$/);
+        if (match) {
+          const key = match[1] ?? "";
+          const value = match[2] ?? "";
+  
+          if (!result.has(key)) {
+            result.set(key, new Set());
+          }
+          result.get(key)?.add(value);
+        }
+      });
+  
+      return result;
+    }
+
+    const systemidLibkeyMap = parseString(systemid);
+    const systemidArray = Array.from(systemidLibkeyMap.keys());
     {
-      setSystemidDetailUrlParams(systemid.split(","));
-      const systemidArray = systemid.split(",");
+      console.log("あいうえお",systemidLibkeyMap)
+      setSystemidsUrlParams(systemidLibkeyMap);
+
       systemidArray.forEach(async (systemid) => {
-        const systemidsObject: SystemidObject = { systemid: systemid };
+        const systemidsObject: SystemidObject = { systemid };
 
-        const librariesFromSystemid = await mutateAsyncLibraryFromSystemid(
-          systemidsObject
-        );
+        const librariesFromSystemid: CalilLibrariesFromSystemid =
+          await mutateAsyncLibraryFromSystemid(systemidsObject);
 
-        setLibraries((prevLibraries) => {
-          const newLibraries = new Map(prevLibraries);
+        setSystemids((prevSystemidMap) => {
+          const newSystemidMap: SystemidMap = {
+            systemidLibkeyFormalMap: new Map(
+              prevSystemidMap.systemidLibkeyFormalMap
+            ),
+          };
+
           librariesFromSystemid.forEach((library) => {
-            newLibraries.set(library.systemid, library.systemname);
+            if (!newSystemidMap.systemidLibkeyFormalMap.has(library.systemid)) {
+              newSystemidMap.systemidLibkeyFormalMap.set(
+                library.systemid,
+                new Map([[library.libkey, library.formal]])
+              );
+            } else {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              newSystemidMap.systemidLibkeyFormalMap
+                .get(library.systemid)!
+                .set(library.libkey, library.formal);
+            }
           });
-          return newLibraries;
+          return newSystemidMap;
         });
       });
     }
@@ -143,16 +190,13 @@ export const SSearchResult: React.FC = () => {
       const firstSearchCalilBooks = async () => {
         const isbnCodesSystemids: IsbnCodesSystemidDetail = {
           isbnCodes: isbn,
-          systemidDetail: systemid,
+          systemidDetail: systemidArray.join(','),
         };
 
         const json: CalilBooksApiResponse =
           await mutateAsyncFirstSearchCalilBooks(isbnCodesSystemids);
         setIsbnCodesUrlParams(Object.keys(json.books));
 
-        Object.keys(json.books).forEach((systemid) => {
-          setSystemidDetailUrlParams((prev) => [...prev, ...systemid]);
-        });
         setResultMap(json);
         setContinueValue(json.continue);
         setSession(json.session);
@@ -196,12 +240,6 @@ export const SSearchResult: React.FC = () => {
           await mutateAsyncSessionSearchCalilBooks(sessionObject);
         setIsbnCodesUrlParams(Object.keys(json.books));
 
-        Object.values(json.books).forEach((systemid) => {
-          setSystemidDetailUrlParams((prev = []) => [
-            ...prev,
-            ...Object.keys(systemid),
-          ]);
-        });
         setResultMap(json);
         setContinueValue(json.continue);
       };
@@ -217,11 +255,12 @@ export const SSearchResult: React.FC = () => {
         <SBackSearchForm
           prevPage={prevPageUrlParams}
           isbnCodesUrlParams={isbnCodesUrlParams}
-          systemidsUrlParams={systemIdsUrlParams}
+          systemidLibkeyMap={systemIdsUrlParams}
         />
         <SNameLinkList
           books={booksCandidateList}
-          libraries={libraries}
+          systemidLibkeyMap={systemIdsUrlParams}
+          systemids={systemids}
           resultMap={resultMap.books}
         />
       </div>

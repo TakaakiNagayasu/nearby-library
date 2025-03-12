@@ -133,25 +133,23 @@ export const MapWidget: React.FC<Props> = ({ apiKey, mapId, libraries }) => {
 
         setLibraryMarkers(newMarkers);
 
-        const calcKmToM = (strKm: string) => {
-          const numKm: number = strKm ? Number.parseFloat(strKm) : 0;
-          const numM = Math.round(numKm * 1000);
-          return numM.toString() + "m";
-        };
+        // const calcKmToM = (strKm: string) => {
+        //   const numKm: number = strKm ? Number.parseFloat(strKm) : 0;
+        //   const numM = Math.round(numKm * 1000);
+        //   return numM.toString() + "m";
+        // };
 
         // 図書館候補一覧に反映
         setValueFormLibrariesCandidateList(
           "checkboxList",
-          librariesFromGeoCode.map(
-            ({ systemid, formal, distance, url_pc }) => ({
-              enabled: true,
-              checkbox: false,
-              name: formal,
-              sub: calcKmToM(distance),
-              value: systemid,
-              link: url_pc,
-            })
-          )
+          librariesFromGeoCode.map(({ systemid, formal, libkey, url_pc }) => ({
+            enabled: true,
+            checkbox: false,
+            name: formal,
+            sub: libkey,
+            value: systemid,
+            link: url_pc,
+          }))
         );
       };
 

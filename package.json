@@ -7,7 +7,9 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "db:pull:env": "dotenv -e .env -- npx prisma db pull",
+    "db:pull:local": "dotenv -e .env.local -- npx prisma db pull"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

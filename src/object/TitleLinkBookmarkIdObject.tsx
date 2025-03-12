@@ -6,6 +6,7 @@ export type TitleLinkBookmarkIdObject = {
   }[];
   bookmarkLibraries: {
     systemId: string;
+    libkey: string;
   }[];
   link: string;
 };
@@ -18,15 +19,16 @@ export type TitleLinkBookmarkIdDto = {
   }[];
   bookmark_libraries: {
     system_id: string;
+    libkey: string;
   }[];
 };
 
 export function dtoToObject(
   dto: TitleLinkBookmarkIdDto
 ): TitleLinkBookmarkIdObject {
-  const isbnCodes = dto.bookmark_books.map((b) => b.isbn).join(",");
+  const isbnCodes = dto.bookmark_books.map((book) => book.isbn).join(",");
   const systemidDetail = dto.bookmark_libraries
-    .map((l) => l.system_id)
+    .map((library) => `${library.system_id}:${library.libkey}`)
     .join(",");
 
   return {
@@ -37,6 +39,7 @@ export function dtoToObject(
     })),
     bookmarkLibraries: dto.bookmark_libraries.map((library) => ({
       systemId: library.system_id,
+      libkey: library.libkey,
     })),
     link: `searchResult?prevPage=bookmark&isbn=${isbnCodes}&systemid=${systemidDetail}`,
   };

@@ -10,13 +10,13 @@ import { useSession } from "next-auth/react";
 type Props = {
   prevPage: string | undefined;
   isbnCodesUrlParams: string[];
-  systemidsUrlParams: string[];
+  systemidLibkeyMap: Map<string, Set<string>>;
 };
 
 export const SBackSearchForm: React.FC<Props> = ({
   prevPage,
   isbnCodesUrlParams,
-  systemidsUrlParams,
+  systemidLibkeyMap,
 }) => {
   const { data: session } = useSession();
 
@@ -59,10 +59,14 @@ export const SBackSearchForm: React.FC<Props> = ({
 
   const handleRegisterBookmark = () => {
     // サーバーにデータを送信
+    systemidLibkeyMap.forEach((libkey)=>{
+      console.log("systemidLibkeyMap", libkey)
+    })
     insertBookmark.mutate({
       title: getValues().title,
       isbnCodes: isbnCodesUrlParams,
-      systemids: systemidsUrlParams,
+      systemids: Array.from(systemidLibkeyMap.keys()),
+      libkeyMap: systemidLibkeyMap,
     });
   };
 

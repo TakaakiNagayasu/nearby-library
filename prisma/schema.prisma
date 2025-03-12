@@ -89,7 +89,8 @@ model bookmark_libraries {
   system_id   String
   created_at  DateTime? @default(now()) @db.Timestamp(6)
   updated_at  DateTime? @default(now()) @db.Timestamp(6)
+  libkey      String
   bookmark    bookmark  @relation(fields: [bookmark_id], references: [bookmark_id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@id([bookmark_id, number])
+  @@id([bookmark_id, number, system_id, libkey])
 }

@@ -195,23 +195,21 @@ const SSearchForm: React.FC = () => {
   };
 
   const searchCollectionBooks = () => {
-    const isbnString = getValuesFormBooksSearchList().checkboxList
-      .map((book) => book.value)
+    const isbnString = getValuesFormBooksSearchList()
+      .checkboxList.map((book) => book.value)
       .join(",");
-    const systemidDistinctSet = new Set<string>();
-    getValuesFormLibrariesSearchList().checkboxList.forEach((checkNameLink) => {
-      if (!systemidDistinctSet.has(checkNameLink.value ?? "")) {
-        systemidDistinctSet.add(checkNameLink.value ?? "");
-      }
-    });
-    const systemidString = Array.from(systemidDistinctSet.values()).join(",");
+
+    const systemidLibkeyString: string =
+      getValuesFormLibrariesSearchList().checkboxList.map(
+        (checkNameLink) => (`${checkNameLink.value}:${checkNameLink.sub}`)
+      ).join(',');
 
     let apiQueries: string[] = [];
     apiQueries = isbnString
       ? [...apiQueries, `isbn=${isbnString}`]
       : apiQueries;
-    apiQueries = systemidString
-      ? [...apiQueries, `systemid=${systemidString}`]
+    apiQueries = systemidLibkeyString
+      ? [...apiQueries, `systemid=${systemidLibkeyString}`]
       : apiQueries;
     const apiQueryString: string =
       apiQueries.length <= 0

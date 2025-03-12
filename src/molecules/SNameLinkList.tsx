@@ -1,18 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { SystemidDetail } from "../interface/calilBooksApiInterface";
+import type { SystemidMap } from "../object/SystemidMap";
 
 type Props = {
   books: Map<string, string>;
-  libraries: Map<string, string>;
+  systemidLibkeyMap: Map<string, Set<string>>
+  systemids: SystemidMap;
   resultMap: Map<string, Map<string, SystemidDetail>>;
 };
 
 export const SNameLinkList: React.FC<Props> = ({
   books,
-  libraries,
+  systemidLibkeyMap,
+  systemids,
   resultMap,
 }) => {
+  console.log("systemidLibkeyMap", systemidLibkeyMap);
+  console.log("systemids", systemids);
+  console.log("resultMap", resultMap);
+
   return (
     <>
       {Object.entries(resultMap).map(([isbn, systemIdMap]) => {
@@ -29,7 +36,7 @@ export const SNameLinkList: React.FC<Props> = ({
           <div key={isbn}>
             <div className="flex justify-between">
               <p>{books.get(isbn)}</p>
-              <p>{`${totalLibkeyCount}件`}</p>
+              <p>{`${totalLibkeyCount ?? 0}件`}</p>
             </div>
 
             <div className="my-2 h-[128px] overflow-y-auto border bg-accent text-text">
@@ -40,23 +47,24 @@ export const SNameLinkList: React.FC<Props> = ({
 
                   return Object.entries(
                     typedSystemIdDetail?.libkey ?? {}
-                  ).flatMap(([library, status]) => (
-                    <div key={library} className="h-[24px]">
+                  ).flatMap(([libkey, status]) => (
+
+                    <div key={libkey} className="h-[24px]">
                       <p
-                        title={libraries.get(systemid)}
-                        className="inline-block w-[144px] truncate md:w-[108px]"
+                        title={systemids.systemidLibkeyFormalMap.get(systemid)?.get(libkey)}
+                        className="inline-block w-[224px] truncate md:w-[188px]"
                       >
-                        {libraries.get(systemid)}
+                        {systemids.systemidLibkeyFormalMap.get(systemid)?.get(libkey)}
                       </p>
                       {typedSystemIdDetail.status === "OK" ||
                       typedSystemIdDetail.status === "Cache" ||
                       typedSystemIdDetail.status === "Running" ? (
                         <>
                           <p
-                            title={`${library}:${status}`}
-                            className="inline-block w-[204px] truncate md:w-[204px]"
+                            title={status}
+                            className="inline-block w-[124px] truncate md:w-[124px]"
                           >
-                            {`${library}:${status}`}
+                            {systemidLibkeyMap.get(systemid)?.has(libkey) ? status : `【検索外】${status}`}
                           </p>
                           {typedSystemIdDetail.reserveurl ? (
                             <Link
@@ -79,6 +87,8 @@ export const SNameLinkList: React.FC<Props> = ({
                         <p>想定外の値検出</p>
                       )}
                     </div>
+
+                    
                   ));
                 }
               )}

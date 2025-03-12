@@ -30,6 +30,10 @@ const insertBookmarkValidation = z.object({
     .min(1)
     .max(30),
   systemids: z.array(z.string().min(1).max(100)).min(1).max(30),
+  libkeyMap: z.map(
+    z.string().min(1).max(100),
+    z.set(z.string().min(1).max(100)).min(1).max(30)
+  ),
 });
 
 const deleteBookmarkValidation = z.object({
@@ -80,6 +84,7 @@ export const appRouter = router({
             },
             select: {
               system_id: true,
+              libkey: true,
             },
           },
         },
@@ -113,6 +118,7 @@ export const appRouter = router({
           },
           select: {
             system_id: true,
+            libkey: true,
           },
         },
       },
@@ -134,6 +140,7 @@ export const appRouter = router({
         id: session.user.id,
         isbnCodes: input.isbnCodes,
         systemids: input.systemids,
+        libkeyMap: input.libkeyMap,
       });
     }),
 
@@ -156,11 +163,13 @@ async function insertBookmarkWithRelations({
   id,
   isbnCodes,
   systemids,
+  libkeyMap,
 }: {
   title: string;
   id: string;
   isbnCodes: string[];
   systemids: string[];
+  libkeyMap: Map<string, Set<string>>;
 }) {
   return await prisma.$transaction(async (tx) => {
     const newBookmark = await tx.bookmark.create({
@@ -183,12 +192,17 @@ async function insertBookmarkWithRelations({
     }
 
     if (systemids.length > 0) {
+      let idx = 1;
+
       await tx.bookmark_libraries.createMany({
-        data: systemids.map((systemid, idx) => ({
-          bookmark_id: newBookmark.bookmark_id,
-          number: idx + 1,
-          system_id: systemid,
-        })),
+        data: systemids.flatMap((systemid) =>
+          Array.from(libkeyMap.get(systemid) ?? []).map((libkey) => ({
+            bookmark_id: newBookmark.bookmark_id,
+            number: idx++,
+            system_id: systemid,
+            libkey: libkey,
+          }))
+        ),
       });
     }
 
