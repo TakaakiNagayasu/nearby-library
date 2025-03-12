@@ -50,6 +50,21 @@ export const SAddAndRemoveForm: React.FC<Props> = ({
 }) => {
   const addHandler = () => {
     const prevList = getValuesFormItemsSearchList()?.checkboxList ?? [];
+
+    const candidateCheckedCount =
+      getValuesFormItemsCandidateList().checkboxList.reduce(
+        (count, item) => count + (item.checkbox ? 1 : 0),
+        0
+      );
+    if (
+      candidateCheckedCount +
+        getValuesFormItemsSearchList().checkboxList.length >
+      30
+    ) {
+      alert(`一度に検索できる${itemName}の数は30までです。`);
+      return;
+    }
+
     const checkNameLinkItemArray: CheckNameLinkItem[] = [
       ...prevList,
       ...(getValuesFormItemsCandidateList()
@@ -72,7 +87,10 @@ export const SAddAndRemoveForm: React.FC<Props> = ({
     const parsedResult = checkNameLinkZodObject.shape.checkboxList.safeParse(
       checkNameLinkItemArray
     );
-    setValueFormItemsSearchList("checkboxList", parsedResult.success ? parsedResult.data : checkNameLinkItemArray);
+    setValueFormItemsSearchList(
+      "checkboxList",
+      parsedResult.success ? parsedResult.data : checkNameLinkItemArray
+    );
   };
 
   const removeHandler = () => {
@@ -87,20 +105,21 @@ export const SAddAndRemoveForm: React.FC<Props> = ({
         value: item.value,
         link: item.link,
       }));
-      const parsedResult = checkNameLinkZodObject.shape.checkboxList.safeParse(
-        checkNameLinkItemArray
-      );
-      setValueFormItemsSearchList("checkboxList", parsedResult.success ? parsedResult.data : checkNameLinkItemArray);
-    };
+    const parsedResult = checkNameLinkZodObject.shape.checkboxList.safeParse(
+      checkNameLinkItemArray
+    );
+    setValueFormItemsSearchList(
+      "checkboxList",
+      parsedResult.success ? parsedResult.data : checkNameLinkItemArray
+    );
+  };
 
-  const {
-  } = useFieldArray({
+  const {} = useFieldArray({
     control: controlItemsCandidateList,
     name: "checkboxList",
   });
 
-  const {
-  } = useFieldArray({
+  const {} = useFieldArray({
     control: controlItemsSearchList,
     name: "checkboxList",
   });

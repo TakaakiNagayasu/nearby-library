@@ -1,9 +1,7 @@
 import { useContext, useEffect, useRef } from "react";
 import { SInputText } from "../atoms/SInputText";
 import SButton from "../atoms/SButton";
-import {
-  FormBookSearchContext,
-} from "../templates/SSearchForm";
+import { FormBookSearchContext } from "../templates/SSearchForm";
 import { trpc } from "../utils/trpc";
 
 export default function SSearchBooksInformation() {
@@ -36,10 +34,16 @@ export default function SSearchBooksInformation() {
     const handleSubmit = async () => {
       try {
         const searchGoogleBooks = await mutateAsync(getValuesFormBookSearch());
+
         setValueFormBooksCandidateList(
           "checkboxList",
           searchGoogleBooks.checkboxList
         );
+
+        if (searchGoogleBooks.checkboxList.length <= 0) {
+          alert("書籍検索結果は0件でした。")
+        }
+
       } catch (error) {
         console.error(error);
       }

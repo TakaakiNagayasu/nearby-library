@@ -59,9 +59,6 @@ export const SBackSearchForm: React.FC<Props> = ({
 
   const handleRegisterBookmark = () => {
     // サーバーにデータを送信
-    systemidLibkeyMap.forEach((libkey)=>{
-      console.log("systemidLibkeyMap", libkey)
-    })
     insertBookmark.mutate({
       title: getValues().title,
       isbnCodes: isbnCodesUrlParams,

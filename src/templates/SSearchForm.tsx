@@ -415,7 +415,7 @@ const SSearchForm: React.FC = () => {
                 width={100}
                 height={40}
                 src={"/img/calil_logocopy_bgblack.svg"}
-                alt="Powered by カーリル"
+                alt="Powered by カーリル 図書館検索"
                 className="mx-1 mt-[3px] inline-block align-top"
               />
             </Link>

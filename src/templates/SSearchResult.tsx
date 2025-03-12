@@ -6,10 +6,7 @@ import { trpc } from "../utils/trpc";
 import type { BookSearch } from "../object/BookSearchObject";
 import type { IsbnTitle } from "../object/IsbnTitleObject";
 import type { IsbnCodesSystemidDetail } from "../object/IsbnCodesSystemidDetailObject";
-import type {
-  CalilBooksApiResponse,
-  SystemidDetail,
-} from "../interface/calilBooksApiInterface";
+import type { CalilBooksApiResponse } from "../interface/calilBooksApiInterface";
 import type { Session } from "../object/SessionObject";
 import type { SystemidObject } from "../object/SystemidsObject";
 import type { SystemidMap } from "../object/SystemidMap";
@@ -96,31 +93,30 @@ export const SSearchResult: React.FC = () => {
 
     function parseString(input: string): Map<string, Set<string>> {
       const result = new Map<string, Set<string>>();
-  
+
       // 1回目の正規表現: "," で区切り、配列を作成
       const pairs = input.split(/,/);
-  
+
       // 2回目の正規表現: ":" でキーと値に分割
       pairs.forEach((pair) => {
         const match = pair.match(/^([^:]+):(.+)$/);
         if (match) {
           const key = match[1] ?? "";
           const value = match[2] ?? "";
-  
+
           if (!result.has(key)) {
             result.set(key, new Set());
           }
           result.get(key)?.add(value);
         }
       });
-  
+
       return result;
     }
 
     const systemidLibkeyMap = parseString(systemid);
     const systemidArray = Array.from(systemidLibkeyMap.keys());
     {
-      console.log("あいうえお",systemidLibkeyMap)
       setSystemidsUrlParams(systemidLibkeyMap);
 
       systemidArray.forEach(async (systemid) => {
@@ -190,7 +186,7 @@ export const SSearchResult: React.FC = () => {
       const firstSearchCalilBooks = async () => {
         const isbnCodesSystemids: IsbnCodesSystemidDetail = {
           isbnCodes: isbn,
-          systemidDetail: systemidArray.join(','),
+          systemidDetail: systemidArray.join(","),
         };
 
         const json: CalilBooksApiResponse =

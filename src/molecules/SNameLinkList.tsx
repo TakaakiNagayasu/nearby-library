@@ -16,10 +16,6 @@ export const SNameLinkList: React.FC<Props> = ({
   systemids,
   resultMap,
 }) => {
-  console.log("systemidLibkeyMap", systemidLibkeyMap);
-  console.log("systemids", systemids);
-  console.log("resultMap", resultMap);
-
   return (
     <>
       {Object.entries(resultMap).map(([isbn, systemIdMap]) => {
