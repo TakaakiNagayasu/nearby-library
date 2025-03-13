@@ -12,7 +12,7 @@ export const SButton: React.FC<Props> = ({ handle, type, child }) => {
   return (
     <>
       <button
-        className="px-1 h-8 my-2 bg-warning text-text"
+        className="my-2 h-8 bg-warning px-1 text-text"
         type={type}
         onClick={isParams(handle) ? () => handle : handle}
       >

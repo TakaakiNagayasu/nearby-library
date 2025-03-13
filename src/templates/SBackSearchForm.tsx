@@ -86,6 +86,7 @@ export const SBackSearchForm: React.FC<Props> = ({
         {session && !prevPage ? (
           <>
             <br />
+            <p className={"mt-2"}>ブックマーク名</p>
             <SInputTextShort
               register={register("title")}
             />

@@ -199,10 +199,11 @@ const SSearchForm: React.FC = () => {
       .checkboxList.map((book) => book.value)
       .join(",");
 
-    const systemidLibkeyString: string =
-      getValuesFormLibrariesSearchList().checkboxList.map(
-        (checkNameLink) => (`${checkNameLink.value}:${checkNameLink.sub}`)
-      ).join(',');
+    const systemidLibkeyString: string = getValuesFormLibrariesSearchList()
+      .checkboxList.map(
+        (checkNameLink) => `${checkNameLink.value}:${checkNameLink.sub}`
+      )
+      .join(",");
 
     let apiQueries: string[] = [];
     apiQueries = isbnString
@@ -294,6 +295,7 @@ const SSearchForm: React.FC = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="md:w-[320px]">
+            <p className={"mb-2"}>マップ内押下でマーカーを設置</p>
             <div className="mb-2 flex items-center justify-center">
               <SearchNearByLibraryContext.Provider
                 value={{ searchNearByLibrary, setSearchNearByLibrary }}

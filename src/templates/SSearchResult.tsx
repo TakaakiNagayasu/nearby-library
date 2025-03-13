@@ -248,6 +248,7 @@ export const SSearchResult: React.FC = () => {
   return (
     <>
       <div className="mx-auto w-[424px] bg-main p-4 text-accent">
+        <h2 className="text-xl">検索結果（2.5秒おきに自動更新）</h2>
         <SBackSearchForm
           prevPage={prevPageUrlParams}
           isbnCodesUrlParams={isbnCodesUrlParams}
