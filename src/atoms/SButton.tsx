@@ -1,24 +1,40 @@
+/**
+ * `SButton` コンポーネントのプロパティ定義
+ */
 type Props = {
+  /** ボタンのクリックイベント */
   handle: React.MouseEventHandler<HTMLButtonElement>;
-  type: "button" | "reset" | "submit";
-  child: string;
+  /** ボタンのレベル（見た目を決定） */
+  level: "info" | "warning" | "danger";
+  /** ボタンに表示するテキスト */
+  buttonText: string;
 };
 
-function isParams(value: unknown): value is Props {
-  return Array.isArray(value);
-}
+/**
+ * カスタムボタンコンポーネント
+ *
+ * @param {Props} props - コンポーネントのプロパティ
+ * @returns {JSX.Element} レンダリングされるボタン要素
+ */
+export const SButton: React.FC<Props> = ({
+  handle,
+  level,
+  buttonText,
+}: Props): JSX.Element => {
+  const levelClasses = {
+    info: "bg-sub",
+    warning: "bg-warning",
+    danger: "bg-error",
+  };
 
-export const SButton: React.FC<Props> = ({ handle, type, child }) => {
   return (
-    <>
-      <button
-        className="px-1 h-8 my-2 bg-sub text-text"
-        type={type}
-        onClick={isParams(handle) ? () => handle : handle}
-      >
-        {child}
-      </button>
-    </>
+    <button
+      className={`my-2 h-8 px-1 text-text ${levelClasses[level]}`}
+      type="button"
+      onClick={handle}
+    >
+      {buttonText}
+    </button>
   );
 };
 

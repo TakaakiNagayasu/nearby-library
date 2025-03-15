@@ -41,9 +41,8 @@ export default function SSearchBooksInformation() {
         );
 
         if (searchGoogleBooks.checkboxList.length <= 0) {
-          alert("書籍検索結果は0件でした。")
+          alert("書籍検索結果は0件でした。");
         }
-
       } catch (error) {
         console.error(error);
       }
@@ -82,8 +81,8 @@ export default function SSearchBooksInformation() {
               setSearchBooksInformation((prev) => !prev);
             })();
           }}
-          type={"button"}
-          child={"書籍候補検索"}
+          level={"info"}
+          buttonText={"書籍候補検索"}
         ></SButton>
       </div>
     </>

@@ -145,8 +145,8 @@ export const SAddAndRemoveForm: React.FC<Props> = ({
                 addHandler();
               })();
             }}
-            type={"button"}
-            child={`${itemName}検索対象に追加`}
+            level={"info"}
+            buttonText={`${itemName}検索対象に追加`}
           ></SButton>
           <SButton
             handle={() => {
@@ -154,8 +154,8 @@ export const SAddAndRemoveForm: React.FC<Props> = ({
                 removeHandler();
               })();
             }}
-            type={"button"}
-            child={`${itemName}検索対象から除外`}
+            level={"info"}
+            buttonText={`${itemName}検索対象から除外`}
           ></SButton>
         </div>
         <SCheckNameLinkList

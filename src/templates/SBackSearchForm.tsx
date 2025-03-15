@@ -73,14 +73,14 @@ export const SBackSearchForm: React.FC<Props> = ({
         {session && prevPage ? (
           <SButton
             handle={() => backBookmark()}
-            type={"button"}
-            child={"ブックマーク画面へ戻る"}
+            level={"info"}
+            buttonText={"ブックマーク画面へ戻る"}
           ></SButton>
         ) : (
           <SButton
             handle={() => backSearchForm()}
-            type={"button"}
-            child={"検索画面へ戻る"}
+            level={"info"}
+            buttonText={"検索画面へ戻る"}
           ></SButton>
         )}
         {session && !prevPage ? (
@@ -92,8 +92,8 @@ export const SBackSearchForm: React.FC<Props> = ({
             />
             <SButton
               handle={handleSubmit(() => handleRegisterBookmark())}
-              type={"button"}
-              child={"検索条件をブックマークする"}
+              level={"info"}
+              buttonText={"検索条件をブックマークする"}
             ></SButton>
             <br />
             {errors.title && (

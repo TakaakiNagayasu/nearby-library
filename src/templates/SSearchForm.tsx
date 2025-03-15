@@ -1,5 +1,4 @@
 import SButton from "../atoms/SButton";
-import SWarningButton from "../atoms/SWarningButton";
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -224,13 +223,13 @@ const SSearchForm: React.FC = () => {
       <div className="mx-auto w-[424px] bg-main p-4 text-accent md:w-[740px]">
         <div className="flex justify-between">
           <h2 className="text-xl">書籍検索フォーム</h2>
-          <SWarningButton
+          <SButton
             handle={() => {
               resetBooksForm();
             }}
-            type={"button"}
-            child={"書籍検索フォームをリセット"}
-          ></SWarningButton>
+            level={"warning"}
+            buttonText={"書籍検索フォームをリセット"}
+          ></SButton>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2">
@@ -285,13 +284,13 @@ const SSearchForm: React.FC = () => {
         </div>
         <div className="mb-2 mt-8 flex justify-between">
           <h2 className="text-xl">図書館検索フォーム</h2>
-          <SWarningButton
+          <SButton
             handle={() => {
               resetLibrariesForm();
             }}
-            type={"button"}
-            child={"図書館検索フォームをリセット"}
-          ></SWarningButton>
+            level={"warning"}
+            buttonText={"図書館検索フォームをリセット"}
+          ></SButton>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="md:w-[320px]">
@@ -338,8 +337,8 @@ const SSearchForm: React.FC = () => {
                         setSearchNearByLibrary((prev) => !prev);
                       })();
                     }}
-                    type={"button"}
-                    child={"マーカー周辺の図書館を検索"}
+                    level={"info"}
+                    buttonText={"マーカー周辺の図書館を検索"}
                   ></SButton>
                 }
               </div>
@@ -407,8 +406,8 @@ const SSearchForm: React.FC = () => {
                   searchCollectionBooks();
                 }
               }}
-              type={"button"}
-              child={"蔵書検索開始"}
+              level={"info"}
+              buttonText={"蔵書検索開始"}
             ></SButton>
           </div>
           <div className="text-right">
