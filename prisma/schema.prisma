@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Example {
@@ -63,7 +64,7 @@ model bookmark {
   bookmark_id        String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   id                 String               @default(dbgenerated("gen_random_uuid()"))
   title              String
-  created_at         DateTime?            @default(now()) @db.Timestamp(6)
+  created_at         DateTime?            @default(now()) @db.Timestamptz(6)
   updated_at         DateTime?            @default(now()) @db.Timestamp(6)
   User               User                 @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   bookmark_books     bookmark_books[]
@@ -75,7 +76,7 @@ model bookmark_books {
   bookmark_id String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   number      BigInt
   isbn        String
-  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
   updated_at  DateTime? @default(now()) @db.Timestamp(6)
   bookmark    bookmark  @relation(fields: [bookmark_id], references: [bookmark_id], onDelete: NoAction, onUpdate: NoAction)
 
@@ -87,7 +88,7 @@ model bookmark_libraries {
   bookmark_id String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   number      BigInt
   system_id   String
-  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
   updated_at  DateTime? @default(now()) @db.Timestamp(6)
   libkey      String
   bookmark    bookmark  @relation(fields: [bookmark_id], references: [bookmark_id], onDelete: NoAction, onUpdate: NoAction)
