@@ -1,5 +1,4 @@
 import { Html, Head, Main, NextScript } from "next/document";
-import type { DocumentContext } from "next/document";
 import Document from "next/document";
 
 /**
@@ -8,12 +7,7 @@ import Document from "next/document";
  * @class CustomDocument カスタムドキュメント
  * @extends {Document} Next.jsカスタムドキュメント用ベースクラス
  */
-export class CustomDocument extends Document {
-  static async getInitialProps(ctx: DocumentContext) {
-    const initialProps = await Document.getInitialProps(ctx);
-    return { ...initialProps };
-  }
-
+class CustomDocument extends Document {
   render() {
     return (
       <Html lang="ja">
@@ -32,3 +26,5 @@ export class CustomDocument extends Document {
     );
   }
 }
+
+export default CustomDocument;
